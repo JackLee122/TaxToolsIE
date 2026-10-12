@@ -7,8 +7,12 @@ export const metadata: Metadata = {
 
 export default function SettingsPage() {
   return (
-    <main className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6">
-      <h1 className="mb-8 text-2xl font-semibold tracking-tight">Settings</h1>
+    <main className="app-shell">
+      <p className="eyebrow mb-3">Planned workspace</p>
+      <h1 className="page-title">Settings</h1>
+      <p className="page-description mb-9 mt-3">
+        Manage account and tax workspace preferences when available.
+      </p>
       <EmptyState
         title="Settings are not needed yet"
         description="Broker accounts, sync configuration and the supported-profile guardrail will live here in later phases."

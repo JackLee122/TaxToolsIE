@@ -1,26 +1,145 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #0f172a;
+  --background: #f6f7f3;
+  --foreground: #202c29;
+  --surface: #fdfefb;
+  --line: #dce3dc;
+  --muted: #60716b;
+  --accent: #285c4d;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #e2e8f0;
-  }
+  --font-sans: ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-family: ui-sans-serif, system-ui, sans-serif;
+}
+
+::selection {
+  background: #cde6d9;
+  color: #173d33;
+}
+
+button,
+input,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible {
+  outline: 3px solid #81b99c;
+  outline-offset: 3px;
+}
+
+.app-shell {
+  margin-inline: auto;
+  width: min(100%, 75rem);
+  padding: 2.5rem 1rem 5rem;
+}
+
+.eyebrow {
+  color: var(--accent);
+  font-size: 0.7rem;
+  font-weight: 750;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.page-title {
+  color: #1d302a;
+  font-size: clamp(2rem, 3.4vw, 3.1rem);
+  font-weight: 700;
+  letter-spacing: -0.055em;
+  line-height: 1.08;
+}
+
+.page-description {
+  max-width: 60ch;
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.65;
+}
+
+.card-surface {
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  background: var(--surface);
+  box-shadow: 0 8px 30px -24px #19392b55;
+}
+
+.button-primary,
+.button-secondary {
+  display: inline-flex;
+  min-height: 2.65rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.55rem;
+  padding: 0.6rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 650;
+  transition:
+    background-color 150ms ease,
+    color 150ms ease,
+    border-color 150ms ease;
+}
+
+.button-primary {
+  background: #285c4d;
+  color: #fdfefb;
+}
+
+.button-primary:hover {
+  background: #194839;
+}
+
+.button-secondary {
+  border: 1px solid #cbd7cf;
+  background: var(--surface);
+  color: #284a3e;
+}
+
+.button-secondary:hover {
+  background: #edf3ed;
+}
+
+.field-input {
+  min-height: 2.7rem;
+  width: 100%;
+  border: 1px solid #cbd7cf;
+  border-radius: 0.55rem;
+  background: #fff;
+  padding: 0.6rem 0.8rem;
+  color: var(--foreground);
+}
+
+.field-input:focus {
+  border-color: var(--accent);
+  outline: 3px solid #d9ebe0;
+}
+
+.metric-label {
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+.metric-value {
+  color: #1d302a;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+}
+
+@media (min-width: 640px) {
+  .app-shell {
+    padding-inline: 1.5rem;
+    padding-top: 3.5rem;
+  }
 }
