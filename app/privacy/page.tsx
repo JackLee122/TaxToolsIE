@@ -6,8 +6,8 @@ export const metadata: Metadata = {
 
 const principles = [
   {
-    title: "Local-first and private",
-    body: "TaxToolie runs on your machine. Tax data is stored in a local SQLite database and is never sent to a cloud database, analytics service or telemetry service.",
+    title: "Private account data",
+    body: "When connected, your tax profile, employment, credit claims, investment entries and import summaries are stored in Supabase. Database row-level policies limit access to your signed-in account. The deployed app runs on Vercel.",
   },
   {
     title: "No Revenue login, ever",
@@ -15,39 +15,39 @@ const principles = [
   },
   {
     title: "No LLM in the tax path",
-    body: "All tax calculations, classifications and eligibility decisions are deterministic and unit-tested. No third-party AI receives your financial data or generates any calculated figure.",
+    body: "Supported tax estimates use deterministic code, and uncertain investment classifications require your review. No third-party AI generates tax figures or receives your financial data through this app.",
   },
   {
-    title: "No third-party document processing",
-    body: "PDFs and CSV files are parsed locally. There is no third-party OCR or document-processing API.",
+    title: "No external document AI",
+    body: "Trading 212 CSV files are previewed in your browser and validated on the app server after you confirm import. Revenue PDF import, external OCR and document-processing APIs are not connected.",
   },
   {
-    title: "Raw documents are disposable",
-    body: "Uploaded Revenue PDFs and broker files are parsed, you review the extracted values, and the raw file is deleted afterwards. They are not stored long-term.",
+    title: "Raw CSV files are not saved",
+    body: "After confirmation, the CSV is sent to the app server. The app saves parsed investment entries, the file name and import counts in Supabase, but does not save the original CSV. PDF uploads are not supported.",
   },
   {
     title: "API keys stay server-side",
-    body: "If you configure one, a broker API key is read only on the server, is never stored in the database, and is never exposed to the browser.",
+    body: "No broker API connection is active in the current app.",
   },
   {
     title: "Estimates, not filing",
-    body: "Every figure is an estimate for guidance. TaxToolie does not submit returns to Revenue, and supported limits are shown where the calculation cannot cover something.",
+    body: "Every figure is an estimate for guidance. TaxToolsIE does not submit returns to Revenue, and supported limits are shown where the calculation cannot cover something.",
   },
 ];
 
 export default function PrivacyPage() {
   return (
-    <main className="mx-auto w-full max-w-3xl px-4 py-10 sm:px-6">
-      <h1 className="text-2xl font-semibold tracking-tight">Privacy &amp; data handling</h1>
-      <p className="mt-2 text-sm text-zinc-600">
-        TaxToolie is designed as a private, local-first tool for estimating your
-        Irish personal tax position.
+    <main className="mx-auto w-full max-w-3xl px-4 py-12 sm:py-16">
+      <p className="eyebrow mb-3">About your data</p>
+      <h1 className="page-title">Privacy &amp; data handling</h1>
+      <p className="page-description mt-3">
+        TaxToolsIE is designed as a private tool for estimating your Irish personal tax position.
       </p>
-      <ul className="mt-8 space-y-6">
+      <ul className="card-surface mt-9 divide-y divide-[#e4ebe3] px-6 sm:px-8">
         {principles.map((p) => (
-          <li key={p.title}>
-            <h2 className="text-sm font-semibold">{p.title}</h2>
-            <p className="mt-1 text-sm leading-relaxed text-zinc-600">{p.body}</p>
+          <li key={p.title} className="py-5">
+            <h2 className="text-sm font-semibold text-[#1d302a]">{p.title}</h2>
+            <p className="mt-1 text-sm leading-6 text-[#60716b]">{p.body}</p>
           </li>
         ))}
       </ul>
