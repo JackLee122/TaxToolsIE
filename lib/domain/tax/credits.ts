@@ -123,3 +123,23 @@ export function calculatePensionRelief2026(input: {
 export function sumIncomeTaxCredits(values: readonly DecimalString[]): DecimalString {
   return toDecimalString(values.reduce((total, value) => total.plus(value), d(ZERO)));
 }
+
+export function sumConfirmedIncomeTaxCredits(
+  claims: readonly { type: string; status: string; estimatedTaxValue: DecimalString }[],
+): DecimalString {
+  const confirmed = claims.filter((claim) => claim.status === "USER_CONFIRMED");
+  const rent = min(
+    sumIncomeTaxCredits(
+      confirmed
+        .filter((claim) => claim.type === "RENT_TAX_CREDIT")
+        .map((claim) => claim.estimatedTaxValue),
+    ),
+    credits2026.rentCreditMaximum as DecimalString,
+  );
+  const other = sumIncomeTaxCredits(
+    confirmed
+      .filter((claim) => ["HEALTH_EXPENSE_RELIEF", "TUITION_FEE_RELIEF"].includes(claim.type))
+      .map((claim) => claim.estimatedTaxValue),
+  );
+  return toDecimalString(d(rent).plus(other));
+}
