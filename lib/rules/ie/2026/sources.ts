@@ -4,7 +4,7 @@ export type RuleSource = {
   lastVerified: string;
 };
 
-const lastVerified = "2026-09-21";
+const lastVerified = "2026-10-15";
 
 export const sources = {
   incomeTax: {
@@ -30,6 +30,31 @@ export const sources = {
   cgt: {
     title: "Revenue: CGT payment and filing",
     url: "https://www.revenue.ie/en/gains-gifts-and-inheritance/transfering-an-asset/when-and-how-do-you-pay-and-file-cgt.aspx",
+    lastVerified,
+  },
+  cgtRates: {
+    title: "Revenue: 2026 standard CGT rate change",
+    url: "https://www.revenue.ie/en/tax-professionals/ebrief/2026/no-1422026.aspx",
+    lastVerified,
+  },
+  shareIdentification: {
+    title: "Revenue: selling or disposing of shares",
+    url: "https://www.revenue.ie/en/gains-gifts-and-inheritance/transfering-an-asset/selling-or-disposing-of-shares.aspx",
+    lastVerified,
+  },
+  fundRate: {
+    title: "Revenue: 2026 investment undertaking rate change",
+    url: "https://www.revenue.ie/en/tax-professionals/ebrief/2026/no-0162026.aspx",
+    lastVerified,
+  },
+  offshoreFunds: {
+    title: "Revenue: equivalent offshore fund gains and eight-year events",
+    url: "https://www.revenue.ie/en/tax-professionals/tdm/income-tax-capital-gains-tax-corporation-tax/part-27/27-04-01.pdf",
+    lastVerified,
+  },
+  etfTransition: {
+    title: "Revenue: ETF transitional eight-year treatment",
+    url: "https://www.revenue.ie/en/tax-professionals/tdm/income-tax-capital-gains-tax-corporation-tax/part-27/27-01a-03.pdf",
     lastVerified,
   },
 } as const satisfies Record<string, RuleSource>;
