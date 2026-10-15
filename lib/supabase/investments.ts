@@ -22,6 +22,8 @@ export type InvestmentEntry = {
   importBatchId: string | null;
   reviewStatus: "CONFIRMED" | "REQUIRES_REVIEW";
   note: string | null;
+  fundTaxMethod: "OFFSHORE_EQUIVALENT_FIFO" | null;
+  fundDeemedStartDate: string | null;
 };
 
 type Row = {
@@ -45,6 +47,8 @@ type Row = {
   import_batch_id: string | null;
   review_status: InvestmentEntry["reviewStatus"];
   note: string | null;
+  fund_tax_method: InvestmentEntry["fundTaxMethod"];
+  fund_deemed_start_date: string | null;
 };
 
 function fromRow(row: Row): InvestmentEntry {
@@ -69,6 +73,8 @@ function fromRow(row: Row): InvestmentEntry {
     importBatchId: row.import_batch_id,
     reviewStatus: row.review_status,
     note: row.note,
+    fundTaxMethod: row.fund_tax_method,
+    fundDeemedStartDate: row.fund_deemed_start_date,
   };
 }
 
@@ -148,6 +154,8 @@ export async function addInvestmentEntry(
     import_batch_id: entry.importBatchId,
     review_status: entry.reviewStatus,
     note: entry.note,
+    fund_tax_method: entry.fundTaxMethod,
+    fund_deemed_start_date: entry.fundDeemedStartDate,
   });
   if (error) throw new Error("Could not save investment entry");
 }
@@ -158,6 +166,7 @@ export async function updateInvestmentReview(
   id: string,
   value: Pick<
     InvestmentEntry,
+    | "symbol"
     | "classification"
     | "grossAmount"
     | "feeAmount"
@@ -165,20 +174,27 @@ export async function updateInvestmentReview(
     | "eurAmount"
     | "incomeJurisdiction"
     | "interestSourceType"
+    | "note"
     | "reviewStatus"
+    | "fundTaxMethod"
+    | "fundDeemedStartDate"
   >,
 ) {
   const { data, error } = await supabase
     .from("investment_entry")
     .update({
       classification: value.classification,
+      symbol: value.symbol,
       gross_amount: value.grossAmount,
       fee_amount: value.feeAmount,
       withholding_amount: value.withholdingAmount,
       eur_amount: value.eurAmount,
       income_jurisdiction: value.incomeJurisdiction,
       interest_source_type: value.interestSourceType,
+      note: value.note,
       review_status: value.reviewStatus,
+      fund_tax_method: value.fundTaxMethod,
+      fund_deemed_start_date: value.fundDeemedStartDate,
     })
     .eq("user_id", userId)
     .eq("id", id)
@@ -194,6 +210,64 @@ export async function deleteInvestmentEntry(supabase: SupabaseClient, userId: st
     .eq("user_id", userId)
     .eq("id", id);
   if (error) throw new Error("Could not delete investment entry");
+}
+
+export type FundUnitValuation = {
+  isin: string;
+  valuationDate: string;
+  unitValueEur: string;
+  evidenceNote: string;
+};
+
+export async function listFundUnitValuations(
+  supabase: SupabaseClient,
+  userId: string,
+): Promise<FundUnitValuation[]> {
+  const valuations: FundUnitValuation[] = [];
+  for (let offset = 0; offset < 10_000; offset += 500) {
+    const { data, error } = await supabase
+      .from("fund_unit_valuation")
+      .select("isin,valuation_date,unit_value_eur,evidence_note")
+      .eq("user_id", userId)
+      .order("valuation_date", { ascending: false })
+      .range(offset, offset + 499);
+    if (error) throw new Error("Could not load fund valuations");
+    valuations.push(
+      ...(
+        data as {
+          isin: string;
+          valuation_date: string;
+          unit_value_eur: string;
+          evidence_note: string;
+        }[]
+      ).map((row) => ({
+        isin: row.isin,
+        valuationDate: row.valuation_date,
+        unitValueEur: row.unit_value_eur,
+        evidenceNote: row.evidence_note,
+      })),
+    );
+    if (data.length < 500) return valuations;
+  }
+  throw new Error("Too many fund valuations to display safely");
+}
+
+export async function upsertFundUnitValuation(
+  supabase: SupabaseClient,
+  userId: string,
+  valuation: FundUnitValuation,
+) {
+  const { error } = await supabase.from("fund_unit_valuation").upsert(
+    {
+      user_id: userId,
+      isin: valuation.isin,
+      valuation_date: valuation.valuationDate,
+      unit_value_eur: valuation.unitValueEur,
+      evidence_note: valuation.evidenceNote,
+    },
+    { onConflict: "user_id,isin,valuation_date" },
+  );
+  if (error) throw new Error("Could not save fund valuation");
 }
 
 export type ImportBatch = {
