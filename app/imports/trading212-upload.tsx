@@ -29,8 +29,9 @@ export function Trading212Upload() {
     <form action={importTrading212Csv} className="card-surface p-6 sm:p-8">
       <h2 className="text-xl font-semibold text-[#1d302a]">Trading 212 CSV</h2>
       <p className="mt-2 max-w-2xl text-sm leading-6 text-[#60716b]">
-        Export 2026 Invest account history from Trading 212. The CSV is parsed for preview and sent
-        only when you confirm import. Raw files are not retained.
+        Export Invest account history through 2026 from Trading 212, including older purchases and
+        sales that establish cost basis. The CSV is parsed for preview and sent only when you
+        confirm import. Raw files are not retained.
       </p>
       <label className="mt-6 grid max-w-md gap-2 text-sm font-medium text-[#314b40]">
         Choose CSV

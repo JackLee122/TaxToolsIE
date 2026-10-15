@@ -17,7 +17,7 @@ export default async function ImportsPage({
   const [batches, params] = await Promise.all([listImportBatches(supabase, userId), searchParams]);
   return (
     <main className="app-shell">
-      <p className="eyebrow mb-3">2026 / Data</p>
+      <p className="eyebrow mb-3">2026 / Data and history</p>
       <h1 className="page-title">Imports</h1>
       <p className="page-description mb-9 mt-3">
         Bring broker activity into your workspace, review it, and keep an import history.

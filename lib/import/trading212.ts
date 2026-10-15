@@ -78,7 +78,8 @@ export function parseTrading212Csv(text: string): { drafts: Trading212Draft[]; e
     );
   }
   const nameCol = column("name", "instrument");
-  const tickerCol = column("ticker", "isin");
+  const isinCol = column("isin");
+  const tickerCol = column("ticker");
   const quantityCol = column("no. of shares", "quantity", "shares");
   const idCol = column("id", "transaction id");
   const drafts: Trading212Draft[] = [];
@@ -89,13 +90,8 @@ export function parseTrading212Csv(text: string): { drafts: Trading212Draft[]; e
     const eventDate = date(field(timeCol));
     const grossAmount = number(field(totalCol));
     const currency = field(currencyCol).toUpperCase();
-    if (
-      !eventDate ||
-      !eventDate.startsWith("2026-") ||
-      !grossAmount ||
-      !/^[A-Z]{3}$/.test(currency)
-    ) {
-      errors.push(`Row ${index + 2}: use a 2026 date and check the amount and currency`);
+    if (!eventDate || eventDate > "2026-12-31" || !grossAmount || !/^[A-Z]{3}$/.test(currency)) {
+      errors.push(`Row ${index + 2}: use a 2026 or earlier date and check the amount and currency`);
       return;
     }
     const lower = action.toLowerCase();
@@ -113,7 +109,7 @@ export function parseTrading212Csv(text: string): { drafts: Trading212Draft[]; e
       errors.push(`Row ${index + 2}: trade quantity is missing`);
       return;
     }
-    const symbol = field(tickerCol) || null;
+    const symbol = field(isinCol) || field(tickerCol) || null;
     const assetName = field(nameCol) || symbol || action || "Unknown event";
     const externalId =
       field(idCol) ||

@@ -43,4 +43,27 @@ describe("Trading 212 CSV preview", () => {
     expect(result.drafts).toHaveLength(0);
     expect(result.errors).toHaveLength(1);
   });
+
+  it("accepts earlier trades for cost-basis history but rejects later years", () => {
+    const csv = [
+      "Action,Time,Name,Ticker,No. of shares,Total,Currency (Total),ID",
+      "Market buy,2024-05-01,Example Inc,EX,2,-100,EUR,old-buy",
+      "Market sell,2025-05-01,Example Inc,EX,1,60,EUR,old-sell",
+      "Market buy,2027-01-01,Example Inc,EX,1,-70,EUR,future-buy",
+    ].join("\n");
+    const result = parseTrading212Csv(csv);
+    expect(result.drafts.map((draft) => [draft.eventDate, draft.kind])).toEqual([
+      ["2024-05-01", "BUY"],
+      ["2025-05-01", "SELL"],
+    ]);
+    expect(result.errors).toHaveLength(1);
+  });
+
+  it("prefers an ISIN over a ticker when both are exported", () => {
+    const csv = [
+      "Action,Time,Name,Ticker,ISIN,No. of shares,Total,Currency (Total),ID",
+      "Market buy,2026-01-01,Example Inc,EX,US0378331005,1,-100,EUR,trade-1",
+    ].join("\n");
+    expect(parseTrading212Csv(csv).drafts[0].symbol).toBe("US0378331005");
+  });
 });
